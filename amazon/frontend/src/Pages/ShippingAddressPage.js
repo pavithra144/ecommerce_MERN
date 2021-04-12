@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 export default function ShippingAddressPage(props) {
   const userSignIn = useSelector((state) => state.userSignIn);
   const { userInfo } = userSignIn;
+  console.log(userInfo)
 
   const cart = useSelector((state) => state.cart);
   const { shippingAddress } = cart;

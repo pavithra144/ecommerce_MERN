@@ -19,6 +19,7 @@ export default function () {
 
   const userDetails = useSelector((state) => state.userDetailsProfile);
   const { loading, error, user } = userDetails;
+  console.log(user)
 
   const userUpdateDetails = useSelector((state) => state.userUpdateProfile);
   const {
@@ -31,7 +32,8 @@ export default function () {
     if (!user) {
      // dispatch({ type: USER_UPDATE_PROFILE_RESET });
       dispatch(detailsUser(userInfo._id));
-    } else {
+    } 
+    else {
       setName(user.name);
       setEmail(user.email);
     }
