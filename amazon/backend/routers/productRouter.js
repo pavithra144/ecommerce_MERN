@@ -2,6 +2,7 @@ import express from "express";
 import expressAsyncHandler from "express-async-handler";
 import data from "../data.js";
 import Product from "../models/productModels.js";
+import { isAdmin, isAuth } from "../utils.js";
 
 const productRouter = express.Router();
 
@@ -10,6 +11,7 @@ productRouter.get(
   expressAsyncHandler(async (req, res) => {
     const allProducts = await Product.find({});
     res.send(allProducts);
+    console.log(allProducts);
   })
 );
 
@@ -33,4 +35,63 @@ productRouter.get(
   })
 );
 
+productRouter.post(
+  "/",
+  isAuth,
+  isAdmin,
+  expressAsyncHandler(async (req, res) => {
+    const product = new Product({
+      name: "Sample product" + Date.now(),
+      image: "/images/p2.jpg",
+      price: 0,
+      category: "Sample Category",
+      countInStock: 0,
+      rating: 0,
+      numReviews: 0,
+      brand: "pant",
+      description: " new product",
+    });
+    const createdProduct = await product.save();
+    res.send({ message: "Product created", product: createdProduct });
+  })
+);
+
+productRouter.put(
+  "/:id",
+  isAuth,
+  isAdmin,
+  expressAsyncHandler(async (req, res) => {
+    const productId = req.params.id;
+    const product = await Product.findById(productId);
+    if (product) {
+      product.name = req.body.name;
+      product.price = req.body.price;
+      product.image = req.body.image;
+      product.category = req.body.category;
+      product.brand = req.body.brand;
+      product.countInStock = req.body.countInStock;
+      product.description = req.body.description;
+
+      const updatedProduct = await product.save();
+      res.send({ message: "Product updated", product: updatedProduct });
+    } else {
+      res.status(404).send({ message: "Product not found" });
+    }
+  })
+);
+
+productRouter.delete(
+  "/:id",
+  isAuth,
+  isAdmin,
+  expressAsyncHandler(async (req, res) => {
+    const product = await Product.findById(req.params.id);
+    if (product) {
+      const deletedProduct = await product.remove();
+      res.send({ message: "Product Deleted", product: deletedProduct });
+    } else {
+      res.status(404).send({ message: "Product not found" });
+    }
+  })
+);
 export default productRouter;

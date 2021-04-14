@@ -14,9 +14,12 @@ import OrderDetailsPage from "./Pages/OrderDetailsPage";
 import OrderHistoryPage from "./Pages/OrderHistoryPage";
 import ProfilesPage from "./Pages/ProfilesPage";
 import PrivateRoute from "./components/PrivateRoute";
+import AdminRoute from "./components/AdminRoute";
+import ProductListAdminPage from "./Pages/ProductListAdminPage";
+import EditProductAdminPage from "./Pages/EditProductAdminPage";
+import OrderListAdminPage from "./Pages/OrderListAdminPage";
 
 function App(props) {
-  
   //cartitems
   const cart = useSelector((state) => state.cart);
   const { cartItems } = cart;
@@ -24,7 +27,7 @@ function App(props) {
   //userInfo to display at header
 
   const userSignIn = useSelector((state) => state.userSignIn);
-  
+
   const { userInfo } = userSignIn;
 
   const dispatch = useDispatch();
@@ -94,7 +97,12 @@ function App(props) {
         </header>
         <main>
           <Route path="/cart/:id?" component={CartPage}></Route>
-          <Route path="/product/:id" component={ProductPage}></Route>
+          <Route exact path="/product/:id" component={ProductPage}></Route>
+          <Route
+            exact
+            path="/product/:id/edit"
+            component={EditProductAdminPage}
+          ></Route>
           <Route path="/signin" component={SigninPage}></Route>
           <Route path="/register" component={RegisterPage}></Route>
           <Route path="/shipping" component={ShippingAddressPage}></Route>
@@ -103,6 +111,14 @@ function App(props) {
           <Route path="/order/:id" component={OrderDetailsPage}></Route>
           <Route path="/orderhistory" component={OrderHistoryPage}></Route>
           <PrivateRoute path="/profile" component={ProfilesPage}></PrivateRoute>
+          <AdminRoute
+            path="/productlist"
+            component={ProductListAdminPage}
+          ></AdminRoute>
+          <AdminRoute
+            path="/orderlist"
+            component={OrderListAdminPage}
+          ></AdminRoute>
           <Route exact path="/" component={HomePage}></Route>
         </main>
         <footer className="row center">

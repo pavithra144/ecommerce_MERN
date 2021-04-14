@@ -2,7 +2,7 @@ import Axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { detailsOrder, payOrder } from "../actions/orderActions";
+import { deliverOrderAdmin, detailsOrder, payOrder } from "../actions/orderActions";
 import { LoadingBox } from "../components/LoadingBox";
 import { MessageBox } from "../components/MessageBox";
 import { PayPalButton } from "react-paypal-button-v2";
@@ -15,6 +15,9 @@ export default function OrderDetailsPage(props) {
   const orderDetails = useSelector((state) => state.orderDetails); // state.orderDetails comes from combineReducer object name in store.js
   const { loading, order, error } = orderDetails; // loading,order,error comes from orderReducer
 
+  const userSignIn = useSelector(state => state.userSignIn)
+  const {userInfo} = userSignIn
+
   const orderPay = useSelector((state) => state.orderPay);
   const {
     success: successPay,
@@ -22,6 +25,10 @@ export default function OrderDetailsPage(props) {
     loading: loadingPay,
   } = orderPay;
 
+  const deliverOrderHandler = () => {
+    // todo
+    dispatch(deliverOrderAdmin())
+  }
   const dispatch = useDispatch();
   useEffect(() => {
     const addPayPalScript = async () => {
@@ -178,6 +185,11 @@ export default function OrderDetailsPage(props) {
               )}
             </li>
           )}
+          {userInfo.isAdmin && order.isPaid && !order.isDelivered &&
+          <li>
+            <button type="button" className="primary block" onClick={deliverOrderHandler}>Deliver Order</button>
+          </li>
+          }
         </ul>
       </div>
     </div>
