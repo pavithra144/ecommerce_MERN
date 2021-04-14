@@ -2,11 +2,18 @@ import Axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { deliverOrderAdmin, detailsOrder, payOrder } from "../actions/orderActions";
+import {
+  deliverOrderAdmin,
+  detailsOrder,
+  payOrder,
+} from "../actions/orderActions";
 import { LoadingBox } from "../components/LoadingBox";
 import { MessageBox } from "../components/MessageBox";
 import { PayPalButton } from "react-paypal-button-v2";
-import { ORDER_CREATE_RESET } from "../constants/orderConstants";
+import {
+  ORDER_CREATE_RESET,
+  ORDER_DELIVER_RESET,
+} from "../constants/orderConstants";
 
 export default function OrderDetailsPage(props) {
   const [sdkReady, setSdkReady] = useState(false);
@@ -15,8 +22,8 @@ export default function OrderDetailsPage(props) {
   const orderDetails = useSelector((state) => state.orderDetails); // state.orderDetails comes from combineReducer object name in store.js
   const { loading, order, error } = orderDetails; // loading,order,error comes from orderReducer
 
-  const userSignIn = useSelector(state => state.userSignIn)
-  const {userInfo} = userSignIn
+  const userSignIn = useSelector((state) => state.userSignIn);
+  const { userInfo } = userSignIn;
 
   const orderPay = useSelector((state) => state.orderPay);
   const {
@@ -25,11 +32,19 @@ export default function OrderDetailsPage(props) {
     loading: loadingPay,
   } = orderPay;
 
+  const deliverOrder = useSelector((state) => state.deliverOrder);
+  const {
+    success: successDeliver,
+    error: errorDeliver,
+    loading: loadingDeliver,
+  } = deliverOrder;
+
   const deliverOrderHandler = () => {
     // todo
-    dispatch(deliverOrderAdmin())
-  }
+    dispatch(deliverOrderAdmin(order._id));
+  };
   const dispatch = useDispatch();
+
   useEffect(() => {
     const addPayPalScript = async () => {
       const { data } = await Axios.get("/api/config/paypal"); //here data contains clientId from server
@@ -43,8 +58,14 @@ export default function OrderDetailsPage(props) {
       document.body.appendChild(script);
     };
     console.log(order);
-    if (!order || successPay || (order && order._id !== orderId)) {
+    if (
+      !order ||
+      successPay ||
+      successDeliver ||
+      (order && order._id !== orderId)
+    ) {
       dispatch({ type: ORDER_CREATE_RESET });
+      dispatch({ type: ORDER_DELIVER_RESET });
       dispatch(detailsOrder(orderId));
     } else {
       if (!order.isPaid) {
@@ -55,7 +76,7 @@ export default function OrderDetailsPage(props) {
         }
       }
     }
-  }, [dispatch, order, orderId]);
+  }, [dispatch, order, orderId, successDeliver]);
 
   const successPaymentHandler = (paymentResult) => {
     dispatch(payOrder(order, paymentResult));
@@ -185,11 +206,22 @@ export default function OrderDetailsPage(props) {
               )}
             </li>
           )}
-          {userInfo.isAdmin && order.isPaid && !order.isDelivered &&
-          <li>
-            <button type="button" className="primary block" onClick={deliverOrderHandler}>Deliver Order</button>
-          </li>
-          }
+          {userInfo.isAdmin && order.isPaid && !order.isDelivered && (
+            <li>
+              {loadingDeliver && <LoadingBox></LoadingBox>}
+              {errorDeliver && (
+                <MessageBox variant="danger">{errorDeliver}</MessageBox>
+              )}
+
+              <button
+                type="button"
+                className="primary block"
+                onClick={deliverOrderHandler}
+              >
+                Deliver Order
+              </button>
+            </li>
+          )}
         </ul>
       </div>
     </div>
