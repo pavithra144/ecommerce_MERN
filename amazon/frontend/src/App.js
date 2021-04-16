@@ -18,6 +18,8 @@ import AdminRoute from "./components/AdminRoute";
 import ProductListAdminPage from "./Pages/ProductListAdminPage";
 import EditProductAdminPage from "./Pages/EditProductAdminPage";
 import OrderListAdminPage from "./Pages/OrderListAdminPage";
+import UserListAdminPage from "./Pages/UserListAdminPage";
+import UserEditAdminPage from "./Pages/UserEditAdminPage";
 
 function App(props) {
   //cartitems
@@ -118,6 +120,14 @@ function App(props) {
           <AdminRoute
             path="/orderlist"
             component={OrderListAdminPage}
+          ></AdminRoute>
+          <AdminRoute
+            path="/userlist"
+            component={UserListAdminPage}
+          ></AdminRoute>
+          <AdminRoute
+            path="/user/:id/edit"
+            component={UserEditAdminPage}
           ></AdminRoute>
           <Route exact path="/" component={HomePage}></Route>
         </main>

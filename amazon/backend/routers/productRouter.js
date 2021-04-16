@@ -11,7 +11,6 @@ productRouter.get(
   expressAsyncHandler(async (req, res) => {
     const allProducts = await Product.find({});
     res.send(allProducts);
-    console.log(allProducts);
   })
 );
 
@@ -62,6 +61,7 @@ productRouter.put(
   isAdmin,
   expressAsyncHandler(async (req, res) => {
     const productId = req.params.id;
+    
     const product = await Product.findById(productId);
     if (product) {
       product.name = req.body.name;

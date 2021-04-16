@@ -18,10 +18,13 @@ import {
   productDeleteReducer,
 } from "./reducers/productReducers";
 import {
+  userDeleteReducer,
   userDetailsReducer,
+  userListReducer,
   userRegisterReducer,
   userSignInReducer,
   userUpdateProfileReducer,
+  userUpdateReducer,
 } from "./reducers/userReducer";
 
 const initialState = {
@@ -53,12 +56,16 @@ const reducer = combineReducers({
   orderMyList: orderMyListReducer,
   userDetailsProfile: userDetailsReducer,
   userUpdateProfile: userUpdateProfileReducer,
+  //admin view
   createProduct: productCreateReducer,
   updateProduct: productUpdateReducer,
   deleteProduct: productDeleteReducer,
   orderList: orderListReducerAdmin,
   deleteOrder: orderDeleteReducerAdmin,
   deliverOrder: orderDeliverReducerAdmin,
+  userList: userListReducer,
+  deleteUser: userDeleteReducer,
+  updateUser: userUpdateReducer,
 });
 
 const composeEnhancer = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
