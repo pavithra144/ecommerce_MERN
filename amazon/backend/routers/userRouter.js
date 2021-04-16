@@ -2,7 +2,7 @@ import express from "express";
 import data from "../data.js";
 import User from "../models/UserModels.js";
 import bcrypt from "bcryptjs";
-import { generateToken, isAuth } from "../utils.js";
+import { generateToken, isAdmin, isAuth } from "../utils.js";
 import expressAsyncHandler from "express-async-handler";
 
 const userRouter = express.Router();
@@ -73,6 +73,7 @@ userRouter.put(
   isAuth,
   expressAsyncHandler(async (req, res) => {
     const user = await User.findById(req.user._id);
+    // console.log(user);
     if (user) {
       user.name = req.body.name || user.name;
       user.email = req.body.email || user.email;
@@ -89,6 +90,60 @@ userRouter.put(
       isAdmin: updatedUser.isAdmin,
       token: generateToken(updatedUser),
     });
+  })
+);
+
+userRouter.get(
+  "/",
+  isAuth,
+  isAdmin,
+  expressAsyncHandler(async (req, res) => {
+    const users = await User.find({});
+    res.send(users);
+  })
+);
+
+userRouter.delete(
+  "/:id",
+  isAuth,
+  isAdmin,
+  expressAsyncHandler(async (req, res) => {
+    const user = await User.findById(req.body.id);
+
+    if (user) {
+      if (user.email === "admin1@example.com") {
+        res.status(404).send({ message: "Can not delete Admin" });
+        return;
+      }
+      const deletedUser = await user.remove();
+      res.send({ message: "user deleted", deletedUser });
+    } else {
+      res.status(404).send({ message: "User not found" });
+    }
+  })
+);
+
+userRouter.put(
+  "/:id",
+  isAuth,
+  isAdmin,
+  expressAsyncHandler(async (req, res) => {
+    const user = await User.findById(req.params.id);
+    
+    // const user = await User.findById(userId)
+    if (user) {
+      user.name = req.body.name || user.name;
+      user.email = req.body.email || user.email;
+      user.isSeller = req.body.isSeller || user.isSeller;
+      // user.isAdmin = req.body.isAdmin || user.isAdmin;
+      user.isAdmin =
+        req.body.isAdmin === user.isAdmin ? user.isAdmin : req.body.isAdmin;
+
+      const updatedUser = await user.save();
+      res.send({ message: "User updated", user: updatedUser });
+    } else {
+      res.status(404).send({ message: "user not found" });
+    }
   })
 );
 export default userRouter;
