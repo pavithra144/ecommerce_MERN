@@ -6,10 +6,15 @@ import { MessageBox } from "../components/MessageBox";
 import { ORDER_DELETE_RESET } from "../constants/orderConstants";
 
 const OrderListAdminPage = (props) => {
+  const sellerMode = props.match.path.indexOf("/seller") >= 0;
   const dispatch = useDispatch();
+
+  const userSignIn = useSelector((state) => state.userSignIn);
+  const { userInfo } = userSignIn;
 
   const orderList = useSelector((state) => state.orderList);
   const { error, orders, loading } = orderList;
+
   const deleteOrder = useSelector((state) => state.deleteOrder);
   const {
     success: successDelete,
@@ -19,8 +24,8 @@ const OrderListAdminPage = (props) => {
 
   useEffect(() => {
     dispatch({ type: ORDER_DELETE_RESET });
-    dispatch(listOrders());
-  }, [dispatch, successDelete]);
+    dispatch(listOrders({ seller: sellerMode ? userInfo._id : "" }));
+  }, [dispatch, successDelete, userInfo._id, sellerMode]);
 
   const deleteOrderHandler = (order) => {
     //todo
@@ -51,38 +56,43 @@ const OrderListAdminPage = (props) => {
             </tr>
           </thead>
           <tbody>
-            {orders.map((order) => (
-              <tr key={order._id}>
-                <td>{order._id}</td>
-                <td>{order.user.name}</td>
-                <td>{order.createdAt.substring(0, 10)}</td>
-                <td>{order.totalPrice}</td>
-                <td>{order.ispaid ? order.paidAt.substring(0, 10) : "No"}</td>
-                <td>
-                  {order.isDelivered
-                    ? order.deliveredAt.substring(0, 10)
-                    : "No"}
-                </td>
-                <td>
-                  <button
-                    type="button"
-                    className="small"
-                    onClick={() => {
-                      props.history.push(`/order/${order._id}`);
-                    }}
-                  >
-                    Details
-                  </button>
-                  <button
-                    type="button"
-                    className="small"
-                    onClick={() => deleteOrderHandler(order)}
-                  >
-                    Delete
-                  </button>
-                </td>
-              </tr>
-            ))}
+            {orders.map((order) => {
+
+              return (
+                <tr key={order._id}>
+                  <td>{order._id}</td>
+
+                  {/* <td>{obj.username}</td> */}
+                  <td>{}</td>
+                  <td>{order.createdAt.substring(0, 10)}</td>
+                  <td>{order.totalPrice}</td>
+                  <td>{order.ispaid ? order.paidAt.substring(0, 10) : "No"}</td>
+                  <td>
+                    {order.isDelivered
+                      ? order.deliveredAt.substring(0, 10)
+                      : "No"}
+                  </td>
+                  <td>
+                    <button
+                      type="button"
+                      className="small"
+                      onClick={() => {
+                        props.history.push(`/order/${order._id}`);
+                      }}
+                    >
+                      Details
+                    </button>
+                    <button
+                      type="button"
+                      className="small"
+                      onClick={() => deleteOrderHandler(order)}
+                    >
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       )}

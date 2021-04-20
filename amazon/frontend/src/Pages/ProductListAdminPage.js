@@ -15,8 +15,13 @@ import {
 } from "../constants/productConstants";
 
 const ProductListAdminPage = (props) => {
+  const sellerMode = props.match.path.indexOf("/seller") >= 0;
+
   const productList = useSelector((state) => state.productList);
   const { loading, error, products } = productList;
+
+  const userSignIn = useSelector((state) => state.userSignIn);
+  const { userInfo } = userSignIn;
 
   const createProduct = useSelector((state) => state.createProduct);
   const {
@@ -44,8 +49,16 @@ const ProductListAdminPage = (props) => {
     if (successDelete) {
       dispatch({ type: DELETE_PRODUCT_RESET });
     }
-    dispatch(listProducts());
-  }, [dispatch, props.history, successCreate, productCreated, successDelete]);
+    dispatch(listProducts({ seller: sellerMode ? userInfo._id : "" }));
+  }, [
+    dispatch,
+    props.history,
+    successCreate,
+    productCreated,
+    successDelete,
+    sellerMode,
+    userInfo._id
+  ]);
 
   const deleteHandler = (product) => {
     if (window.confirm("Are you sure to Delete products?")) {

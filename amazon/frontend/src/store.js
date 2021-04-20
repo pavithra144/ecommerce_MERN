@@ -5,7 +5,6 @@ import orderCreateReducer, {
   orderDeleteReducerAdmin,
   orderDeliverReducerAdmin,
   orderDetailsReducer,
-  orderListAdmin,
   orderListReducerAdmin,
   orderMyListReducer,
   orderPayReducer,
@@ -16,6 +15,8 @@ import {
   productCreateReducer,
   productUpdateReducer,
   productDeleteReducer,
+  productCategoryListReducer,
+  productCreateReviewReducer,
 } from "./reducers/productReducers";
 import {
   userDeleteReducer,
@@ -23,6 +24,7 @@ import {
   userListReducer,
   userRegisterReducer,
   userSignInReducer,
+  userTopSellerListReducer,
   userUpdateProfileReducer,
   userUpdateReducer,
 } from "./reducers/userReducer";
@@ -59,13 +61,16 @@ const reducer = combineReducers({
   //admin view
   createProduct: productCreateReducer,
   updateProduct: productUpdateReducer,
-  deleteProduct: productDeleteReducer,
+  deleteProduct: productDeleteReducer, 
   orderList: orderListReducerAdmin,
   deleteOrder: orderDeleteReducerAdmin,
   deliverOrder: orderDeliverReducerAdmin,
   userList: userListReducer,
   deleteUser: userDeleteReducer,
   updateUser: userUpdateReducer,
+  userTopSellerList: userTopSellerListReducer,
+  productCategoryList: productCategoryListReducer,
+  productCreateReview: productCreateReviewReducer,
 });
 
 const composeEnhancer = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;

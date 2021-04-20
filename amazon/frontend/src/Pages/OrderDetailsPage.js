@@ -76,7 +76,7 @@ export default function OrderDetailsPage(props) {
         }
       }
     }
-  }, [dispatch, order, orderId, successDeliver]);
+  }, [dispatch, order, orderId, successDeliver,successPay]);
 
   const successPaymentHandler = (paymentResult) => {
     dispatch(payOrder(order, paymentResult));
