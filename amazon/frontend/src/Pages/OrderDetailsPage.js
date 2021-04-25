@@ -118,7 +118,7 @@ export default function OrderDetailsPage(props) {
               <h2>Payment Method</h2>
               <p>{order.paymentMethod}</p>
               {order.isPaid ? (
-                <MessageBox variant="success">{order.paidAt}</MessageBox>
+                <MessageBox variant="success">{order.paidAt}paid</MessageBox>
               ) : (
                 <MessageBox variant="danger">Not paid</MessageBox>
               )}

@@ -19,6 +19,7 @@ import {
   productCreateReviewReducer,
 } from "./reducers/productReducers";
 import {
+  userAddressMapReducer,
   userDeleteReducer,
   userDetailsReducer,
   userListReducer,
@@ -61,7 +62,7 @@ const reducer = combineReducers({
   //admin view
   createProduct: productCreateReducer,
   updateProduct: productUpdateReducer,
-  deleteProduct: productDeleteReducer, 
+  deleteProduct: productDeleteReducer,
   orderList: orderListReducerAdmin,
   deleteOrder: orderDeleteReducerAdmin,
   deliverOrder: orderDeliverReducerAdmin,
@@ -71,6 +72,7 @@ const reducer = combineReducers({
   userTopSellerList: userTopSellerListReducer,
   productCategoryList: productCategoryListReducer,
   productCreateReview: productCreateReviewReducer,
+  useAddressGoogleMap: userAddressMapReducer,
 });
 
 const composeEnhancer = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;

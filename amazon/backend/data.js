@@ -5,6 +5,15 @@ const data = {
       name: "Pavithra",
       email: "admin@example.com",
       password: bcrypt.hashSync("1234", 8),
+      isAdmin: true,
+      isSeller: true,
+      seller: {
+        name: "Nike",
+        logo: "/images/p2.jpg",
+        description: "best seller",
+        rating: 4.5,
+        numReviews: 120,
+      },
     },
     {
       name: "Jaya",

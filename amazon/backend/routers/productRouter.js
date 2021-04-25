@@ -9,6 +9,11 @@ const productRouter = express.Router();
 productRouter.get(
   "/",
   expressAsyncHandler(async (req, res) => {
+    let pageSize = 10;
+    const getPageNum = Number(req.query.pageNumber) || 2;
+
+    //pageNumber is query params for url which we get in app.js as "pageNumber"
+
     const name = req.query.name || "";
     const category = req.query.category || "";
 
@@ -39,7 +44,13 @@ productRouter.get(
         : order == "toprated "
         ? { rating: -1 }
         : { _id: -1 };
-
+    const count = await Product.countDocuments({
+      ...sellerFilter,
+      ...nameFilter,
+      ...categoryFilter,
+      ...priceFilter,
+      ...ratingFilter,
+    });
     const allProducts = await Product.find({
       ...sellerFilter,
       ...nameFilter,
@@ -48,8 +59,14 @@ productRouter.get(
       ...ratingFilter,
     })
       .populate("seller", "seller.name seller.logo")
-      .sort(sortOrder);
-    res.send(allProducts);
+      .sort(sortOrder)
+      .skip(pageSize * (getPageNum - 1))
+      .limit(pageSize);
+    res.send({
+      allProducts,
+      getPageNum,
+      noOfpages: Math.ceil(count / pageSize),
+    });
   })
 );
 
@@ -64,8 +81,18 @@ productRouter.get(
 productRouter.get(
   "/seed",
   expressAsyncHandler(async (req, res) => {
-    const createdProducts = await Product.insertMany(data.products);
-    res.send({ createdProducts });
+    const seller = await User.findOne({ isSeller: true });
+    if (seller) {
+      const products = data.products.map((product) => ({
+        ...product,
+        seller: seller._id,
+      }));
+
+      const createdProducts = await Product.insertMany(data.products);
+      res.send({ createdProducts });
+    } else {
+      res.status(500).send({ message: "no seller found" });
+    }
   })
 );
 
@@ -151,9 +178,10 @@ productRouter.post(
   expressAsyncHandler(async (req, res) => {
     const productId = req.params.id;
     const product = await Product.findById(productId);
-    // console.log(product);
+    //  console.log(req);
 
     if (product) {
+      //making only one user to enter one review for single product
       if (product.reviews.find((x) => x.name == req.body.name)) {
         return res
           .status(400)

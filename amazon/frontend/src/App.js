@@ -27,6 +27,7 @@ import SearchPage from "./Pages/SearchPage";
 import { listProductCategories } from "./actions/productActions";
 import { LoadingBox } from "./components/LoadingBox";
 import { MessageBox } from "./components/MessageBox";
+import MapPage from "./Pages/MapPage";
 
 function App(props) {
   const [sidebarIsOpen, setSidebarIsOpen] = useState(false);
@@ -206,13 +207,19 @@ function App(props) {
             exact
           ></Route>
           <Route
-            path="/search/category/:category/name/:name/min/:min/max/:max/rating/:rating/order/:order"
+            path="/search/category/:category/name/:name/min/:min/max/:max/rating/:rating/order/:order/pageNumber/:pageNumber"
             component={SearchPage}
             exact
           ></Route>
           <PrivateRoute path="/profile" component={ProfilesPage}></PrivateRoute>
+          <PrivateRoute path="/map" component={MapPage}></PrivateRoute>
           <AdminRoute
             path="/productlist"
+            component={ProductListAdminPage}
+            exact
+          ></AdminRoute>
+          <AdminRoute
+            path="/productlist/pageNumber/:pageNumber"
             component={ProductListAdminPage}
             exact
           ></AdminRoute>

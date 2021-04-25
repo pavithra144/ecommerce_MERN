@@ -31,17 +31,16 @@ export const listProducts = ({
   max = 0,
   rating = 0,
   order = "",
+  pageNumber = "",
 }) => async (dispatch) => {
   dispatch({
     type: PRODUCT_LIST_REQUEST,
   });
   try {
     // const { data } = await Axios.get(
-    //   `/api/products?seller=${seller}&name=${name}&category=${category}&min=${min}&max=${max}&rating=${rating}&order=${order}`
+    //   `/api/products?pageNumber=${pageNumber}&seller=${seller}&name=${name}&category=${category}&min=${min}&max=${max}&rating=${rating}&order=${order}`
     // );
-    const { data } = await Axios.get(
-      `/api/products?seller=${seller}&name=${name}&category=${category}`
-    );
+    const { data } = await Axios.get(`/api/products?pageNumber=${pageNumber}`);
     dispatch({ type: PRODUCT_LIST_SUCCESS, payload: data });
     console.log(data);
   } catch (error) {
@@ -91,11 +90,15 @@ export const createReview = (productId, review) => async (
     userSignIn: { userInfo },
   } = getState();
   try {
-    const { data } = await Axios.post(`/api/products/${productId}/reviews`, review, {
-      headers: {
-        Authorization: `Bearer ${userInfo.token}`,
-      },
-    });
+    const { data } = await Axios.post(
+      `/api/products/${productId}/reviews`,
+      review,
+      {
+        headers: {
+          Authorization: `Bearer ${userInfo.token}`,
+        },
+      }
+    );
     dispatch({ type: PRODUCT_CREATE_REVIEW_SUCCESS, payload: data.review });
     console.log(data);
   } catch (error) {
